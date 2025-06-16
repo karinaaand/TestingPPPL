@@ -3,100 +3,142 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
+import org.openqa.selenium.JavascriptExecutor;
 
 public class InventoryPage {
-    WebDriver driver;
+    private WebDriver driver;
+    private WebDriverWait wait;
+
+    private By inventoryButton = By.xpath("//button[contains(., 'Inventory')]");
+    private By inventoryDropdown = By.id("dropdown-inventory");
+    private By barangMasukLink = By.xpath("//a[contains(@href, '/inventory/inflows')]");
+    private By tambahButton = By.xpath("//a[contains(@href, '/inventory/inflows/create')]");
+
+    private By vendorDropdown = By.xpath("//select[@name='vendor_id']");
+    private By medicineNameInput = By.xpath("//input[@name='drug']");
+    private By quantityInput = By.xpath("//input[@name='quantity']");
+    private By unitSelect = By.xpath("//select[@name='unit']");
+    private By paymentMethodDropdown = By.xpath("//select[@name='method']");
+    private By dueDateInput = By.xpath("//input[@name='due']");
+    private By expiryDateInput = By.xpath("//input[@name='expired']");
+    private By addDrugButton = By.xpath("//button[contains(., 'Tambah') and not(contains(., '+'))]");
+    private By inventoryModalButton = By.xpath("//div[@id='destinationModal']//button[contains(@onclick, 'selectDestination') and contains(., 'Inventory')]");
+    private By simpanButton = By.xpath("//button[contains(@onclick, 'customBuatModal') and contains(., 'Simpan')]");
 
     public InventoryPage(WebDriver driver) {
         this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
     public void navigateToInventory() {
-        driver.findElement(By.linkText("Inventory")).click();
-    }
+        try {
+            WebElement inventoryBtn = wait.until(ExpectedConditions.elementToBeClickable(inventoryButton));
+            inventoryBtn.click();
+            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(inventoryDropdown));
+            Thread.sleep(1000);
+            wait.until(ExpectedConditions.visibilityOfElementLocated(barangMasukLink));
+            WebElement barangMasukBtn = wait.until(ExpectedConditions.elementToBeClickable(barangMasukLink));
+            ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", barangMasukBtn);
+            Thread.sleep(1000);
+            barangMasukBtn.click();
+            Thread.sleep(1000);
+            wait.until(ExpectedConditions.urlContains("/inventory/inflows"));
 
-    public void addNewStock(String vendor, String medicineName, String paymentMethod, String dueDate,
-                            String quantity, String unit, String price, String expiryDate) {
-        selectVendor(vendor);
-        selectPaymentMethod(paymentMethod);
-        setDueDate(dueDate);
-        setMedicineName(medicineName);
-        setQuantity(quantity);
-        selectUnit(unit);
-        setPrice(price);
-        setExpiryDate(expiryDate);
-    }
-
-    public void selectVendor(String vendor) {
-        WebElement vendorDropdown = driver.findElement(By.cssSelector("select[name='vendor_id']"));
-        vendorDropdown.click();
-        vendorDropdown.findElement(By.xpath(".//option[contains(text(), '" + vendor + "')]")).click();
-    }
-
-    public void selectPaymentMethod(String method) {
-        WebElement methodDropdown = driver.findElement(By.cssSelector("select[name='method']"));
-        methodDropdown.click();
-        methodDropdown.findElement(By.xpath(".//option[contains(text(), '" + method + "')]")).click();
-    }
-
-    public void setDueDate(String date) {
-        driver.findElement(By.cssSelector("input[name='due']")).sendKeys(date);
-    }
-
-    public void setMedicineName(String name) {
-        driver.findElement(By.cssSelector("input[name='drug']")).sendKeys(name);
-    }
-
-    public void setQuantity(String quantity) {
-        driver.findElement(By.cssSelector("input[name='quantity']")).sendKeys(quantity);
-    }
-
-    public void selectUnit(String unit) {
-        WebElement unitDropdown = driver.findElement(By.cssSelector("select[name='unit']"));
-        unitDropdown.click();
-        unitDropdown.findElement(By.xpath(".//option[contains(text(), '" + unit + "')]")).click();
-    }
-
-    public void setPrice(String price) {
-        driver.findElement(By.cssSelector("input[name='price']")).sendKeys(price);
-    }
-
-    public void setExpiryDate(String date) {
-        driver.findElement(By.cssSelector("input[name='expired']")).sendKeys(date);
-    }
-
-    public void clickAddButton() {
-        driver.findElement(By.xpath("//button[contains(text(),'Tambah')]")).click();
-    }
-
-    public void clickSaveButton() {
-        driver.findElement(By.xpath("//button[contains(text(),'Simpan')]")).click();
-    }
-
-    public void confirmDestination(String destination) {
-        WebElement modal = driver.findElement(By.id("destinationModal"));
-        if (destination.equalsIgnoreCase("warehouse")) {
-            modal.findElement(By.xpath(".//button[contains(text(),'Inventory')]")).click();
-        } else {
-            modal.findElement(By.xpath(".//button[contains(text(),'Klinik')]")).click();
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Navigation interrupted", e);
         }
     }
 
-    public boolean isMedicineVisible(String medicineName) {
-        return driver.getPageSource().contains(medicineName);
+    public void clickTambahButton() {
+        try {
+            WebElement tambahLink = wait.until(ExpectedConditions.presenceOfElementLocated(tambahButton));
+            wait.until(ExpectedConditions.visibilityOf(tambahLink));
+            Thread.sleep(1000);
+            ((org.openqa.selenium.JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", tambahLink);
+            Thread.sleep(1000);
+            tambahLink.click();
+            Thread.sleep(1000);
+            wait.until(ExpectedConditions.urlContains("/inventory/inflows/create"));
+            wait.until(ExpectedConditions.presenceOfElementLocated(vendorDropdown));
+            Thread.sleep(1000);
+
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed to click Tambah button", e);
+        }
     }
 
-    public void clickUploadButton() {
-        driver.findElement(By.xpath("//button[contains(text(),'Upload')]")).click();
+    public void fillInventoryForm(String medicineName, String quantity, String expiryDate) {
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(vendorDropdown));
+            Thread.sleep(500);
+            Select vendorSelect = new Select(driver.findElement(vendorDropdown));
+            vendorSelect.selectByIndex(1);
+            Thread.sleep(500);
+            Select paymentSelect = new Select(driver.findElement(paymentMethodDropdown));
+            paymentSelect.selectByValue("cash");
+            Thread.sleep(500);
+            WebElement medicineInput = driver.findElement(medicineNameInput);
+            medicineInput.clear();
+            Thread.sleep(500);
+            medicineInput.sendKeys(medicineName);
+            Thread.sleep(500);
+            WebElement quantityElement = driver.findElement(quantityInput);
+            quantityElement.clear();
+            Thread.sleep(500);
+            quantityElement.sendKeys(quantity);
+            Thread.sleep(500);
+            WebElement expiryInput = driver.findElement(expiryDateInput);
+            ((JavascriptExecutor) driver).executeScript("arguments[0].value = arguments[1]", expiryInput, expiryDate);
+            Thread.sleep(500);
+
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed to fill inventory form", e);
+        }
     }
 
-    public void uploadFile(String filePath) {
-        WebElement fileInput = driver.findElement(By.id("dropzone-file"));
-        fileInput.sendKeys(filePath);
-        driver.findElement(By.xpath("//button[contains(text(),'Tambah')]")).click();
+    public void addDrugItem() {
+        try {
+            WebElement addBtn = wait.until(ExpectedConditions.elementToBeClickable(addDrugButton));
+            addBtn.click();
+            Thread.sleep(1000);
+
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed to add drug item", e);
+        }
     }
 
-    public void downloadTemplate() {
-        driver.findElement(By.xpath("//a[contains(text(),'Template')]")).click();
+    public void clickSimpanButton() {
+        try {
+            WebElement simpanBtn = wait.until(ExpectedConditions.elementToBeClickable(simpanButton));
+            Thread.sleep(1000);
+            simpanBtn.click();
+            Thread.sleep(1000);
+            WebElement inventoryBtn = wait.until(ExpectedConditions.elementToBeClickable(inventoryModalButton));
+            inventoryBtn.click();
+            Thread.sleep(1000);
+            By finalSaveLocator = By.xpath("//div[@id='addModal']//button[@onclick='submitForm()']");
+            WebElement finalSaveBtn = wait.until(ExpectedConditions.elementToBeClickable(finalSaveLocator));
+            finalSaveBtn.click();
+            Thread.sleep(1000);
+
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed to click Simpan button", e);
+        }
+    }
+
+    public void saveInventory() {
+        try {
+            clickSimpanButton();
+            wait.until(ExpectedConditions.urlContains("/inventory/inflows"));
+            Thread.sleep(1000);
+
+        } catch (InterruptedException e) {
+            throw new RuntimeException("Failed to save inventory", e);
+        }
     }
 }

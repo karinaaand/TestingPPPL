@@ -2,6 +2,10 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
 
 /**
  * Page Object Class untuk Halaman Login.
@@ -9,16 +13,13 @@ import org.openqa.selenium.WebDriver;
  */
 public class LoginPage {
 
-    // Menyimpan instance WebDriver yang akan digunakan
     private final WebDriver driver;
+    private final WebDriverWait wait;
 
-    // --- Locators ---
-    // Mendefinisikan locator untuk setiap elemen di halaman sebagai private final By.
-    // Ini membuat kode lebih mudah dibaca dan dirawat.
-    private final By emailField = By.id("email");
-    private final By passwordField = By.id("password");
-    private final By loginButton = By.cssSelector("button[type='submit']");
-    private final By errorMessage = By.cssSelector("div[role='alert']"); // Contoh jika ada pesan error
+    private final By emailInput = By.name("email");
+    private final By passwordInput = By.name("password");
+    private final By loginButton = By.xpath("//button[contains(text(), 'Masuk')]");
+    private final By loginTitle = By.xpath("//h2[contains(text(), 'Masuk')]");
 
     /**
      * Constructor untuk LoginPage.
@@ -26,15 +27,14 @@ public class LoginPage {
      */
     public LoginPage(WebDriver driver) {
         this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
-
-    // --- Aksi pada Halaman (Page Actions / Services) ---
 
     /**
      * Membuka halaman login.
      */
-    public void open() {
-        driver.get("https://simbat.madanateknologi.web.id/login");
+    public void navigateToLoginPage() {
+        driver.get("http://127.0.0.1:8000/login");
     }
 
     /**
@@ -42,7 +42,9 @@ public class LoginPage {
      * @param email Alamat email pengguna.
      */
     public void enterEmail(String email) {
-        driver.findElement(emailField).sendKeys(email);
+        WebElement emailElement = wait.until(ExpectedConditions.presenceOfElementLocated(emailInput));
+        emailElement.clear();
+        emailElement.sendKeys(email);
     }
 
     /**
@@ -50,26 +52,17 @@ public class LoginPage {
      * @param password Password pengguna.
      */
     public void enterPassword(String password) {
-        driver.findElement(passwordField).sendKeys(password);
+        WebElement passwordElement = wait.until(ExpectedConditions.presenceOfElementLocated(passwordInput));
+        passwordElement.clear();
+        passwordElement.sendKeys(password);
     }
 
     /**
      * Menekan tombol login.
      */
     public void clickLoginButton() {
-        driver.findElement(loginButton).click();
-    }
-
-    /**
-     * Metode gabungan untuk melakukan proses login lengkap (Business Flow).
-     * Ini menyederhanakan kode di Step Definitions.
-     * @param email Alamat email pengguna.
-     * @param password Password pengguna.
-     */
-    public void performLogin(String email, String password) {
-        this.enterEmail(email);
-        this.enterPassword(password);
-        this.clickLoginButton();
+        WebElement loginElement = wait.until(ExpectedConditions.elementToBeClickable(loginButton));
+        loginElement.click();
     }
 
     /**
@@ -77,6 +70,36 @@ public class LoginPage {
      * @return String teks pesan error.
      */
     public String getErrorMessage() {
-        return driver.findElement(errorMessage).getText();
+        try {
+            wait.until(ExpectedConditions.or(
+                    ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@class, 'alert') or contains(@class, 'error') or contains(@class, 'invalid-feedback')]")),
+                    ExpectedConditions.urlContains("/dashboard")
+            ));
+
+            if (driver.getCurrentUrl().contains("/login")) {
+                WebElement errorMessageElement = driver.findElement(By.xpath("//div[contains(@class, 'alert') or contains(@class, 'error') or contains(@class, 'invalid-feedback')]"));
+                return errorMessageElement.getText();
+            }
+            return "Login successful";
+        } catch (Exception e) {
+            return "No error message found";
+        }
+    }
+
+    public boolean isErrorMessageDisplayed() {
+        try {
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[contains(@class, 'alert') or contains(@class, 'error') or contains(@class, 'invalid-feedback')]"))).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean isLoginPageDisplayed() {
+        try {
+            WebElement title = wait.until(ExpectedConditions.presenceOfElementLocated(loginTitle));
+            return title.isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
