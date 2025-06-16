@@ -48,7 +48,7 @@ public class InventoryFlowSteps {
 
     @Given("I am logged in as admin")
     public void iAmLoggedInAsAdmin() {
-        driver.get("http://localhost:8000/login");
+        driver.get("https://simbat.madanateknologi.web.id/login");
         loginPage.enterEmail("admin@simbat.disyfa.site");
         loginPage.enterPassword("admin");
         loginPage.clickLoginButton();

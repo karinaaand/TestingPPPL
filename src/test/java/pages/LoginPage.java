@@ -34,7 +34,7 @@ public class LoginPage {
      * Membuka halaman login.
      */
     public void navigateToLoginPage() {
-        driver.get("http://127.0.0.1:8000/login");
+        driver.get("https://simbat.madanateknologi.web.id/login");
     }
 
     /**
