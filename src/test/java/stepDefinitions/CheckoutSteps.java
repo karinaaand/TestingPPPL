@@ -1,10 +1,7 @@
 package stepDefinitions;
 
 import io.cucumber.java.en.*;
-import io.cucumber.java.Before;
-import io.cucumber.java.After;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -22,33 +19,38 @@ public class CheckoutSteps {
     private HistoryPage historyPage;
     private DashboardPage dashboardPage;
 
-    @Given("Pengguna berada pada halaman Checkout Barang")
-    public void pengguna_berada_pada_halaman_checkout_barang() {
-        // Inisialisasi driver jika belum ada
+    private void initializePages() {
         if (driver == null) {
-            driver = new ChromeDriver();
-            driver.manage().window().maximize();
-            wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            
-            // Login ke dashboard
-            driver.get("https://simbat.madanateknologi.web.id/login");
-            driver.findElement(By.name("email")).sendKeys("admin@simbat.disyfa.site");
-            driver.findElement(By.name("password")).sendKeys("admin");
-            driver.findElement(By.xpath("//button[contains(text(), 'Masuk')]")).click();
-            
-            // Setelah login, langsung ke halaman Checkout
+            driver = WebDriverManager.getDriver();
+            wait = WebDriverManager.getWait();
+        }
+        if (checkoutPage == null) {
             checkoutPage = new CheckoutPage(driver);
             historyPage = new HistoryPage(driver);
             dashboardPage = new DashboardPage(driver);
-            driver.get("https://simbat.madanateknologi.web.id/transaction/create");
         }
+    }
+
+    @Given("Pengguna berada pada halaman Checkout Barang")
+    public void pengguna_berada_pada_halaman_checkout_barang() {
+        initializePages();
         
+        // Login ke dashboard
+        driver.get("http://127.0.0.1:8000/login");
+        driver.findElement(By.name("email")).sendKeys("admin@simbat.disyfa.site");
+        driver.findElement(By.name("password")).sendKeys("admin");
+        driver.findElement(By.xpath("//button[contains(text(), 'Masuk')]")).click();
+
+        // Setelah login, langsung ke halaman Checkout
+        driver.get("http://127.0.0.1:8000/transaction/create");
+
         // Verifikasi sudah di halaman checkout
         wait.until(ExpectedConditions.urlContains("/transaction/create"));
     }
 
     @When("Pengguna memilih checkout barang dari {string}")
     public void pengguna_memilih_checkout_barang_dari(String jenis) {
+        initializePages();
         try {
             if ("Inventory".equalsIgnoreCase(jenis)) {
                 By inventoryTab = By.xpath("//div[@id='inventoryTab']");
@@ -68,6 +70,7 @@ public class CheckoutSteps {
 
     @When("Pengguna mengisi diskon transaksi {string}")
     public void pengguna_mengisi_diskon_transaksi(String diskon) {
+        initializePages();
         try {
             By discountInput = By.name("transactionDiscount");
             WebElement discountElement = wait.until(ExpectedConditions.elementToBeClickable(discountInput));
@@ -82,6 +85,7 @@ public class CheckoutSteps {
 
     @When("Pengguna mencari nama item {string}")
     public void pengguna_mencari_nama_item(String namaItem) {
+        initializePages();
         try {
             By medicineNameInput = By.xpath("//input[@placeholder='Nama Item']");
             WebElement medicineInput = wait.until(ExpectedConditions.elementToBeClickable(medicineNameInput));
@@ -103,6 +107,7 @@ public class CheckoutSteps {
 
     @When("Pengguna mengisi kolom jumlah {string}")
     public void pengguna_mengisi_kolom_jumlah(String jumlah) {
+        initializePages();
         try {
             By quantityInput = By.xpath("//input[@placeholder='Jumlah']");
             WebElement quantityElement = wait.until(ExpectedConditions.elementToBeClickable(quantityInput));
@@ -117,6 +122,7 @@ public class CheckoutSteps {
 
     @When("Pengguna klik tombol checkout {string}")
     public void pengguna_klik_tombol_checkout(String tombol) {
+        initializePages();
         try {
             if ("Tambah".equals(tombol)) {
                 By tambahButton = By.xpath("//button[contains(., 'Tambah')]");
@@ -155,6 +161,7 @@ public class CheckoutSteps {
 
     @When("Pengguna konfirmasi checkout")
     public void pengguna_konfirmasi_checkout() {
+        initializePages();
         try {
             By simpanButton = By.xpath("//div[@id='addModal']//button[@onclick='submitForm()']");
             WebElement simpanBtn = wait.until(ExpectedConditions.elementToBeClickable(simpanButton));
@@ -168,6 +175,7 @@ public class CheckoutSteps {
 
     @When("Pengguna kosongkan item")
     public void pengguna_kosongkan_item() {
+        initializePages();
         try {
             By medicineNameInput = By.xpath("//input[@placeholder='Nama Item']");
             WebElement medicineInput = wait.until(ExpectedConditions.elementToBeClickable(medicineNameInput));
@@ -180,6 +188,7 @@ public class CheckoutSteps {
 
     @When("Pengguna memilih format cetak {string}")
     public void pengguna_memilih_format_cetak(String format) {
+        initializePages();
         try {
             if ("PDF".equalsIgnoreCase(format)) {
                 By pdfButton = By.xpath("//button[contains(text(), 'PDF')]");
@@ -194,6 +203,7 @@ public class CheckoutSteps {
 
     @When("Pengguna konfirmasi cetak")
     public void pengguna_konfirmasi_cetak() {
+        initializePages();
         try {
             By confirmPrintButton = By.xpath("//button[contains(., 'Cetak') or contains(., 'Print') or contains(., 'Confirm')]");
             WebElement confirmBtn = wait.until(ExpectedConditions.elementToBeClickable(confirmPrintButton));
@@ -206,6 +216,7 @@ public class CheckoutSteps {
 
     @When("Pengguna memilih diskon rupiah")
     public void pengguna_memilih_diskon_rupiah() {
+        initializePages();
         try {
             By rupiahRadio = By.xpath("//input[@type='radio' and @name='discount' and @value='rupiah']");
             WebElement radioBtn = wait.until(ExpectedConditions.elementToBeClickable(rupiahRadio));
@@ -220,6 +231,7 @@ public class CheckoutSteps {
 
     @When("Pengguna klik tombol {string} pada kolom {string}")
     public void pengguna_klik_tombol_pada_kolom(String tombol, String kolom) {
+        initializePages();
         try {
             if ("View".equals(tombol) && "Action".equals(kolom)) {
                 By viewButton = By.xpath("//table//tbody/tr[1]//td[contains(@class,'flex') and contains(@class,'justify-center')]//a[contains(@class,'bg-blue-500')]");
@@ -234,9 +246,10 @@ public class CheckoutSteps {
 
     @Then("Invoice akan masuk ke dalam History bagian checkout barang")
     public void invoice_akan_masuk_ke_dalam_history_bagian_checkout_barang() {
+        initializePages();
         try {
             // Verifikasi bahwa checkout berhasil
-            boolean isSuccess = driver.getPageSource().contains("Success") || 
+            boolean isSuccess = driver.getPageSource().contains("Success") ||
                               driver.getPageSource().contains("Invoice") ||
                               driver.getCurrentUrl().contains("/log");
             assert isSuccess : "Checkout should be successful";
@@ -247,6 +260,7 @@ public class CheckoutSteps {
 
     @Then("Menampilkan halaman invoice")
     public void menampilkan_halaman_invoice() {
+        initializePages();
         try {
             // Verifikasi bahwa halaman invoice ditampilkan
             boolean isInvoicePage = driver.getPageSource().contains("Invoice") ||
@@ -260,6 +274,7 @@ public class CheckoutSteps {
 
     @Then("Invoice barang yang berhasil di cetak")
     public void invoice_barang_yang_berhasil_di_cetak() {
+        initializePages();
         try {
             // Verifikasi bahwa proses cetak berhasil
             boolean isPrintSuccess = driver.getPageSource().contains("Print") ||
@@ -273,6 +288,7 @@ public class CheckoutSteps {
 
     @Then("Sistem menampilkan pesan {string}")
     public void sistem_menampilkan_pesan(String pesan) {
+        initializePages();
         try {
             // Tunggu dan verifikasi pesan error/warning
             Thread.sleep(2000);
@@ -288,6 +304,7 @@ public class CheckoutSteps {
 
     @Then("Tabel invoice menampilkan kode berawalan {string}")
     public void tabel_invoice_menampilkan_kode_berawalan(String kodeAwal) {
+        initializePages();
         List<WebElement> kodeCells = driver.findElements(By.xpath("//table//tbody/tr/td[1]"));
         boolean found = false;
         for (WebElement cell : kodeCells) {
@@ -299,12 +316,4 @@ public class CheckoutSteps {
         }
         assert found : "Tidak ditemukan invoice dengan kode berawalan: " + kodeAwal;
     }
-
-    @After
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-            driver = null;
-        }
-    }
-} 
+}

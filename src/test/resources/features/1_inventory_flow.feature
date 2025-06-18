@@ -1,10 +1,10 @@
-Feature: SIMBAT Inventory Management Flow
+@inventory_flow
+Feature: SIMBAT Inventory Checkout Flow
   As a user
   I want to manage inventory through the complete flow
   So that I can track drugs from warehouse to clinic and checkout
 
-  @inventory_flow @positive
-  Scenario: Complete inventory flow from warehouse to clinic checkout
+  Scenario: Complete inventory flow from warehouse to checkout
     Given I am logged in as admin
     When I navigate to the inventory page
     And I add new stock with the following details

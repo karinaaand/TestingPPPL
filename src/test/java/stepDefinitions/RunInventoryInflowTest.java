@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
     features = "src/test/resources/features/3_inventory_inflow.feature",
     glue = "stepDefinitions",
     plugin = {"pretty", "html:target/cucumber-inventoryinflow-reports.html"},
-    tags = "@inventory_inflow"
+    tags = "@inflow"
 )
 public class RunInventoryInflowTest {
     // Kosong, hanya untuk runner barang masuk inventory

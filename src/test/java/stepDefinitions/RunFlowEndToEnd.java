@@ -21,8 +21,8 @@ import org.junit.runner.RunWith;
         plugin = {"pretty", "html:target/cucumber-reports.html"},
 
         // Skip semua scenario/feature yang ada tag @skip
-        tags = "not @skip"
+        tags = "@inventory_flow"
 )
-public class RunCucumberTest {
+public class RunFlowEndToEnd {
     // Biarkan kelas ini kosong. Tidak perlu ada isi di dalamnya.
 }

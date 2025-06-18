@@ -1,14 +1,8 @@
-// Seluruh isi file ini dikomentari agar tidak dieksekusi dan tidak menyebabkan browser terbuka dua kali saat test login.
-/*
 package stepDefinitions;
 
-import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 import io.cucumber.datatable.DataTable;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.junit.Assert;
@@ -26,31 +20,24 @@ public class InventoryFlowSteps {
     private HistoryPage historyPage;
     private DashboardPage dashboardPage;
 
-    @Before
-    public void setup() {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--remote-allow-origins=*");
-        driver = new ChromeDriver(options);
-        driver.manage().window().maximize();
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
-        loginPage = new LoginPage(driver);
-        inventoryPage = new InventoryPage(driver);
-        checkoutPage = new CheckoutPage(driver);
-        historyPage = new HistoryPage(driver);
-        dashboardPage = new DashboardPage(driver);
-    }
-
-    @After
-    public void tearDown() {
-        if (driver != null) {
-            driver.quit();
+    private void initializePages() {
+        if (driver == null) {
+            driver = WebDriverManager.getDriver();
+            wait = WebDriverManager.getWait();
+        }
+        if (loginPage == null) {
+            loginPage = new LoginPage(driver);
+            inventoryPage = new InventoryPage(driver);
+            checkoutPage = new CheckoutPage(driver);
+            historyPage = new HistoryPage(driver);
+            dashboardPage = new DashboardPage(driver);
         }
     }
 
     @Given("I am logged in as admin")
     public void iAmLoggedInAsAdmin() {
-        driver.get("https://simbat.madanateknologi.web.id/login");
+        initializePages();
+        driver.get("http://127.0.0.1:8000/login");
         loginPage.enterEmail("admin@simbat.disyfa.site");
         loginPage.enterPassword("admin");
         loginPage.clickLoginButton();
@@ -59,12 +46,14 @@ public class InventoryFlowSteps {
 
     @When("I navigate to the inventory page")
     public void iNavigateToTheInventoryPage() {
+        initializePages();
         inventoryPage = new InventoryPage(driver);
         inventoryPage.navigateToInventory();
     }
 
     @And("I add new stock with the following details")
     public void iAddNewStockWithTheFollowingDetails(DataTable dataTable) {
+        initializePages();
         List<Map<String, String>> stockDetails = dataTable.asMaps();
         Map<String, String> data = stockDetails.get(0);
 
@@ -108,7 +97,7 @@ public class InventoryFlowSteps {
     public void iAddItemWithQuantity(String medicineName, String quantity) {
         try {
             checkoutPage.addItemWithQuantity(medicineName, quantity);
-            Thread.sleep(2000); // Wait for item to be added
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException("Failed to add item with quantity", e);
         }
@@ -118,7 +107,7 @@ public class InventoryFlowSteps {
     public void iSelectCheckoutType(String type) {
         try {
             checkoutPage.selectCheckoutType(type);
-            Thread.sleep(1000); // Wait for selection to take effect
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException("Failed to select checkout type", e);
         }
@@ -128,7 +117,7 @@ public class InventoryFlowSteps {
     public void iProceedWithCheckout() {
         try {
             checkoutPage.proceedWithCheckout();
-            Thread.sleep(2000); // Wait for checkout to complete
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException("Failed to proceed with checkout", e);
         }
@@ -164,4 +153,3 @@ public class InventoryFlowSteps {
         Assert.assertTrue("Login page should be displayed", loginPage.isLoginPageDisplayed());
     }
 }
-*/
