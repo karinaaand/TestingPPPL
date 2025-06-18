@@ -156,8 +156,8 @@ public class InventoryInflowSteps {
         assert found;
     }
 
-    @When("Pengguna klik tombol \"View\" pada kolom \"Action\"")
-    public void pengguna_klik_tombol_view() {
+    @When("Pengguna klik tombol \"View\" pada kolom \"Action\" di barang masuk")
+    public void pengguna_klik_tombol_view_di_barang_masuk() {
         // Tunggu tabel termuat
         new WebDriverWait(driver, Duration.ofSeconds(10))
             .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table tbody tr")));

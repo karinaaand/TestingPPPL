@@ -139,9 +139,13 @@ public class CheckoutSteps {
                 viewBtn.click();
                 Thread.sleep(2000);
             } else if ("Cetak".equals(tombol)) {
-                By printButton = By.xpath("//button[contains(., 'Cetak') or contains(., 'Print')]");
-                WebElement printBtn = wait.until(ExpectedConditions.elementToBeClickable(printButton));
-                printBtn.click();
+                // Tunggu halaman invoice benar-benar tampil
+                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[contains(.,'Invoice')]")));
+                // Tunggu tombol Cetak muncul dan bisa diklik (spesifik sesuai UI)
+                WebElement cetakBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//button[contains(@class,'bg-yellow-300') and contains(text(),'Cetak')]")
+                ));
+                cetakBtn.click();
                 Thread.sleep(1000);
             }
         } catch (Exception e) {
@@ -200,20 +204,6 @@ public class CheckoutSteps {
         }
     }
 
-    // @When("Pengguna klik tombol {string} pada kolom {string}")
-    // public void pengguna_klik_tombol_pada_kolom(String tombol, String kolom) {
-    //     try {
-    //         if ("View".equals(tombol) && "Action".equals(kolom)) {
-    //             By viewButton = By.cssSelector("a.bg-blue-500.p-2.rounded-md");
-    //             WebElement viewBtn = wait.until(ExpectedConditions.elementToBeClickable(viewButton));
-    //             viewBtn.click();
-    //             Thread.sleep(2000);
-    //         }
-    //     } catch (Exception e) {
-    //         throw new RuntimeException("Failed to click " + tombol + " in column " + kolom, e);
-    //     }
-    // }
-
     @When("Pengguna memilih diskon rupiah")
     public void pengguna_memilih_diskon_rupiah() {
         try {
@@ -225,6 +215,20 @@ public class CheckoutSteps {
             Thread.sleep(500);
         } catch (Exception e) {
             throw new RuntimeException("Failed to select rupiah discount radio button", e);
+        }
+    }
+
+    @When("Pengguna klik tombol {string} pada kolom {string}")
+    public void pengguna_klik_tombol_pada_kolom(String tombol, String kolom) {
+        try {
+            if ("View".equals(tombol) && "Action".equals(kolom)) {
+                By viewButton = By.xpath("//table//tbody/tr[1]//td[contains(@class,'flex') and contains(@class,'justify-center')]//a[contains(@class,'bg-blue-500')]");
+                WebElement viewBtn = wait.until(ExpectedConditions.elementToBeClickable(viewButton));
+                viewBtn.click();
+                Thread.sleep(2000);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to click " + tombol + " in column " + kolom, e);
         }
     }
 

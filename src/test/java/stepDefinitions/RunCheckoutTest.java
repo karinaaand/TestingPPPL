@@ -6,7 +6,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-    features = "src/test/resources/features/checkout.feature",
+    features = "src/test/resources/features/4_checkout.feature",
     glue = "stepDefinitions",
     plugin = {"pretty", "html:target/cucumber-checkout-reports.html"},
     tags = "@checkout"

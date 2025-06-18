@@ -18,7 +18,7 @@ Feature: Inventory - Barang Masuk
 
   @positive
   Scenario: Melihat Laporan Penerimaan Barang
-    When Pengguna klik tombol "View" pada kolom "Action"
+    When Pengguna klik tombol "View" pada kolom "Action" di barang masuk
     Then Menampilkan Laporan Penerimaan Barang
 
   @negative
