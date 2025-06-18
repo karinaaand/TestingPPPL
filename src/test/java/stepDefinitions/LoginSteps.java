@@ -18,7 +18,7 @@ public class LoginSteps {
         driver.manage().window().maximize();
         loginPage = new LoginPage(driver);
         dashboardPage = new DashboardPage(driver);
-        loginPage.open();
+        loginPage.navigateToLoginPage();
     }
 
     @When("User enters email {string} and password {string}")

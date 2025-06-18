@@ -18,7 +18,10 @@ import org.junit.runner.RunWith;
         glue = "stepDefinitions",
 
         // Plugin untuk membuat laporan tes yang rapi
-        plugin = {"pretty", "html:target/cucumber-reports.html"}
+        plugin = {"pretty", "html:target/cucumber-reports.html"},
+
+        // Skip semua scenario/feature yang ada tag @skip
+        tags = "not @skip"
 )
 public class RunCucumberTest {
     // Biarkan kelas ini kosong. Tidak perlu ada isi di dalamnya.

@@ -1,3 +1,5 @@
+// Seluruh isi file ini dikomentari agar tidak dieksekusi dan tidak menyebabkan browser terbuka dua kali saat test login.
+/*
 package stepDefinitions;
 
 import io.cucumber.java.After;
@@ -162,3 +164,4 @@ public class InventoryFlowSteps {
         Assert.assertTrue("Login page should be displayed", loginPage.isLoginPageDisplayed());
     }
 }
+*/

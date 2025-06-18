@@ -66,6 +66,17 @@ public class LoginPage {
     }
 
     /**
+     * Melakukan proses login dengan email dan password yang diberikan.
+     * @param email Alamat email pengguna.
+     * @param password Password pengguna.
+     */
+    public void performLogin(String email, String password) {
+        enterEmail(email);
+        enterPassword(password);
+        clickLoginButton();
+    }
+
+    /**
      * Mengambil teks pesan error jika ada.
      * @return String teks pesan error.
      */

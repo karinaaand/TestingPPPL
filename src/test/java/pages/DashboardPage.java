@@ -46,6 +46,13 @@ public class DashboardPage {
         }
     }
 
+    /**
+     * Metode untuk melakukan proses logout (alias untuk clickLogoutButton).
+     */
+    public void logout() {
+        clickLogoutButton();
+    }
+
     public boolean isDashboardDisplayed() {
         try {
             WebElement titleElement = wait.until(ExpectedConditions.presenceOfElementLocated(headerTitle));
