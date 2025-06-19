@@ -31,13 +31,11 @@ Feature: Inventory Inflow Management
     When Pengguna klik tombol "Tambah"
     And Pengguna mengisi data vendor, tanggal barang masuk, nama obat, jumlah negatif atau 0, tanggal expired, dan memilih metode pembayaran
     And Pengguna klik tombol tambah
-    And Pengguna klik tombol simpan
-    Then Sistem menolak dengan pesan "Quantity harus lebih dari 0"
+    Then Sistem menolak dengan pesan "Jumlah harus lebih dari 0"
 
   @inflow-expired
   Scenario: Add inventory with expired date
     When Pengguna klik tombol "Tambah"
     And Pengguna mengisi data vendor, tanggal barang masuk, nama obat, jumlah, tanggal expired sudah lewat, dan memilih metode pembayaran
     And Pengguna klik tombol tambah
-    And Pengguna klik tombol simpan
-    Then Sistem menolak dengan pesan "Tanggal expired tidak boleh sudah lewat"
+    Then Sistem menolak dengan pesan "Tanggal expired tidak boleh di masa lalu"

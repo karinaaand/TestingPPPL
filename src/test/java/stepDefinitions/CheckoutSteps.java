@@ -34,15 +34,15 @@ public class CheckoutSteps {
     @Given("Pengguna berada pada halaman Checkout Barang")
     public void pengguna_berada_pada_halaman_checkout_barang() {
         initializePages();
-        
+
         // Login ke dashboard
-        driver.get("http://127.0.0.1:8000/login");
+        driver.get("https://simbat.madanateknologi.web.id/login");
         driver.findElement(By.name("email")).sendKeys("admin@simbat.disyfa.site");
         driver.findElement(By.name("password")).sendKeys("admin");
         driver.findElement(By.xpath("//button[contains(text(), 'Masuk')]")).click();
 
         // Setelah login, langsung ke halaman Checkout
-        driver.get("http://127.0.0.1:8000/transaction/create");
+        driver.get("https://simbat.madanateknologi.web.id/transaction/create");
 
         // Verifikasi sudah di halaman checkout
         wait.until(ExpectedConditions.urlContains("/transaction/create"));

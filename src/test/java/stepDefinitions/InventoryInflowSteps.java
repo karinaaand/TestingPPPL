@@ -38,12 +38,12 @@ public class InventoryInflowSteps {
    public void pengguna_berada_pada_halaman(String halaman) {
        initializePages();
        // Login ke dashboard
-       driver.get("http://127.0.0.1:8000/login");
+       driver.get("https://simbat.madanateknologi.web.id/login");
        driver.findElement(By.name("email")).sendKeys("admin@simbat.disyfa.site");
        driver.findElement(By.name("password")).sendKeys("admin");
        driver.findElement(By.xpath("//button[contains(text(), 'Masuk')]")).click();
        // Setelah login, langsung ke halaman Barang Masuk
-       driver.get("http://127.0.0.1:8000/inventory/inflows");
+       driver.get("https://simbat.madanateknologi.web.id/inventory/inflows");
    }
 
    @When("Pengguna klik tombol {string}")
